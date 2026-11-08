@@ -16,10 +16,11 @@ export function TrendChart({ snapshots }: { snapshots: Point[] }) {
         Sobald ein vollständiger Datenstand vorliegt, beginnt hier dein Verlauf.
       </p>
     );
-  const maximum = Math.max(
-    1,
-    ...points.flatMap(point => [point.followers.length, point.following.length])
-  );
+  // An even ceiling keeps all three equally spaced axis labels exact integers.
+  const maximum =
+    Math.ceil(
+      Math.max(1, ...points.flatMap(point => [point.followers.length, point.following.length])) / 2
+    ) * 2;
   const start = Date.parse(points[0]!.importedAt);
   const duration = Math.max(1, Date.parse(points[points.length - 1]!.importedAt) - start);
   const x = (index: number) =>
