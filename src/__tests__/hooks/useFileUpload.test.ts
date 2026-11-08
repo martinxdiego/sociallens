@@ -1091,7 +1091,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      const WorkerConstructor = vi.fn(() => mockWorker);
+      const WorkerConstructor = vi.fn(function () {
+        return mockWorker;
+      });
       (global as any).Worker = WorkerConstructor;
 
       const { unmount } = renderHook(() => useFileUpload());
@@ -1120,7 +1122,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      (global as any).Worker = vi.fn(() => mockWorker);
+      (global as any).Worker = vi.fn(function () {
+        return mockWorker;
+      });
 
       renderHook(() => useFileUpload());
 
@@ -1139,7 +1143,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      (global as any).Worker = vi.fn(() => mockWorker);
+      (global as any).Worker = vi.fn(function () {
+        return mockWorker;
+      });
 
       renderHook(() => useFileUpload());
 
@@ -1151,7 +1157,7 @@ describe('useFileUpload', () => {
     });
 
     it('should handle worker error during initialization', async () => {
-      const WorkerConstructor = vi.fn(() => {
+      const WorkerConstructor = vi.fn(function () {
         throw new Error('Worker creation failed');
       });
       (global as any).Worker = WorkerConstructor;
@@ -1171,7 +1177,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      (global as any).Worker = vi.fn(() => mockWorker);
+      (global as any).Worker = vi.fn(function () {
+        return mockWorker;
+      });
 
       renderHook(() => useFileUpload());
 
@@ -1244,7 +1252,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      (global as any).Worker = vi.fn(() => mockWorker);
+      (global as any).Worker = vi.fn(function () {
+        return mockWorker;
+      });
 
       const { result } = renderHook(() => useFileUpload());
 
@@ -1297,7 +1307,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      (global as any).Worker = vi.fn(() => mockWorker);
+      (global as any).Worker = vi.fn(function () {
+        return mockWorker;
+      });
 
       const { result } = renderHook(() => useFileUpload());
 
@@ -1353,7 +1365,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      (global as any).Worker = vi.fn(() => mockWorker);
+      (global as any).Worker = vi.fn(function () {
+        return mockWorker;
+      });
 
       const { result } = renderHook(() => useFileUpload());
 
@@ -1400,7 +1414,9 @@ describe('useFileUpload', () => {
         onerror: null,
       };
 
-      (global as any).Worker = vi.fn(() => mockWorker);
+      (global as any).Worker = vi.fn(function () {
+        return mockWorker;
+      });
 
       const { result } = renderHook(() => useFileUpload());
 

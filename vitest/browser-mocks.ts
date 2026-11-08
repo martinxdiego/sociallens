@@ -21,18 +21,14 @@ export function setupBrowserMocks() {
   });
 
   // Mock ResizeObserver
-  window.ResizeObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
-  }));
+  window.ResizeObserver = vi.fn().mockImplementation(function () {
+    return { observe: vi.fn(), unobserve: vi.fn(), disconnect: vi.fn() };
+  });
 
   // Mock IntersectionObserver
-  window.IntersectionObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
-  }));
+  window.IntersectionObserver = vi.fn().mockImplementation(function () {
+    return { observe: vi.fn(), unobserve: vi.fn(), disconnect: vi.fn() };
+  });
 
   // Mock window.scrollTo
   Object.defineProperty(window, 'scrollTo', {

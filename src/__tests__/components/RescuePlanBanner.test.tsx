@@ -8,11 +8,9 @@ const mockUnobserve = vi.fn();
 const mockDisconnect = vi.fn();
 vi.stubGlobal(
   'IntersectionObserver',
-  vi.fn(() => ({
-    observe: mockObserve,
-    unobserve: mockUnobserve,
-    disconnect: mockDisconnect,
-  }))
+  vi.fn(function () {
+    return { observe: mockObserve, unobserve: mockUnobserve, disconnect: mockDisconnect };
+  })
 );
 
 // Note: RescuePlanBanner test uses simple key-only mock

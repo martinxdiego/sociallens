@@ -33,6 +33,11 @@ function Harness({
 }
 
 describe('useTimeOnResults', () => {
+  beforeEach(() => {
+    // Module factory mocks retain their calls when restoreAllMocks restores spies.
+    vi.clearAllMocks();
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
