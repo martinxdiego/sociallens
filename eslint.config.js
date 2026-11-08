@@ -10,6 +10,9 @@ import importPlugin from 'eslint-plugin-import';
 export default tseslint.config(
   { ignores: [
     'dist',
+    'dist-sociallens',
+    'test-results',
+    'playwright-report',
     'coverage',
     'node_modules',
     'designs',

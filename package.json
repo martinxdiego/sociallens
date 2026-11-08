@@ -26,12 +26,12 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite-react-ssg build && npm run generate:sitemap",
+    "dev": "vite --config vite.sociallens.config.ts",
+    "build": "tsc -b && vite build --config vite.sociallens.config.ts",
     "generate:sitemap": "tsx scripts/generate-sitemap.ts",
     "setup:umami": "tsx scripts/setup-umami.ts",
     "build:spa": "tsc -b && vite build",
-    "build:all": "npm run build && cd docs && bundle install && bundle exec jekyll build -d ../dist/docs",
+    "build:all": "npm run build:upstream && cd docs && bundle install && bundle exec jekyll build -d ../dist/docs",
     "test": "vitest run --reporter=verbose",
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
@@ -45,7 +45,7 @@
     "test:debug": "vitest run --reporter=verbose --no-coverage --bail=1 --testTimeout=30000",
     "test:performance": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --reporter=verbose --no-coverage",
     "test:strict": "vitest run --reporter=verbose --testTimeout=5000 --bail=1",
-    "preview": "vite preview --port 5173",
+    "preview": "vite preview --config vite.sociallens.config.ts",
     "cf:dev": "wrangler dev",
     "cf:check": "wrangler deploy --dry-run",
     "deploy": "npm run build:all && wrangler deploy",
@@ -58,7 +58,11 @@
     "format:check": "prettier --check .",
     "code:check": "npm run lint:strict && npm run type-check",
     "perf:budget": "node scripts/assert-entry-budget.mjs 354000",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:upstream": "vite",
+    "build:upstream": "tsc -b && vite-react-ssg build && npm run generate:sitemap",
+    "test:sociallens": "vitest run src/features/sociallens --reporter=verbose",
+    "test:e2e": "playwright test"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

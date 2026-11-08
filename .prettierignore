@@ -70,3 +70,7 @@ designs/claude-design-project
 # lint-staged covers *.{ts,tsx} and *.{json,md}, not *.html — which is how they
 # reached CI unformatted.
 src/__tests__/fixtures/instagram-html/*.html
+
+dist-sociallens
+playwright-report
+test-results
