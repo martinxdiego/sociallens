@@ -6,19 +6,12 @@ import { describe, expect, it } from 'vitest';
 
 import { SUPPORTED_LANGUAGES } from '@/config/languages';
 
+import { publishedDocsFiles } from '../../../scripts/docs-paths';
 import { shippedNoindexRoutes } from '../../../scripts/noindex-routes';
 
 const DOCS_ROOT = join(process.cwd(), 'docs');
 
-function markdownFiles(dir: string): string[] {
-  return readdirSync(dir).flatMap(entry => {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) return entry === 'assets' ? [] : markdownFiles(full);
-    return full.endsWith('.md') ? [full] : [];
-  });
-}
-
-const DOCS = markdownFiles(DOCS_ROOT).map(path => ({
+const DOCS = publishedDocsFiles(DOCS_ROOT).map(path => ({
   name: relative(DOCS_ROOT, path),
   text: readFileSync(path, 'utf-8'),
 }));

@@ -1,3 +1,79 @@
+# SocialLens
+
+Deine Instagram-Beziehungen lokal verstehen. SocialLens erweitert den MIT-lizenzierten [SafeUnfollow-Fork](https://github.com/ignromanov/safe-unfollow) um kontogetrennte Datenstände, Verlauf und persönliche Organisation.
+
+## Starten
+
+Node 24 LTS verwenden. Node 22 bleibt die Laufzeit der erhaltenen Upstream-CI. Keine `.env`, Serverdatenbank oder Instagram-Anmeldung erforderlich.
+
+```sh
+npm ci
+npm run dev
+```
+
+Öffne die im Terminal angegebene lokale Adresse. Für einen Produktionsbuild mit installierbarer PWA, die nach vollständigem ersten Laden auch ohne Netzwerk verwendbar ist:
+
+```sh
+npm run build
+npm run preview
+```
+
+Das veröffentlichbare Artefakt liegt ausschliesslich in `dist-sociallens/`. Nicht `dist/` veröffentlichen, denn dieses Verzeichnis enthält das separate ursprüngliche Upstream-Buildprofil. Die private Variante entfernt Dienstkonfiguration für Analytics, Werbung und Zahlungen selbst bei gesetzten `VITE_*`-Variablen. Ein HTTPS-Host muss SPA-Fallback und die Header aus `public-sociallens/_headers` übernehmen. Lokal ist `localhost` ein sicherer Browserkontext. Es wurde kein öffentlicher Hosting-Dienst eingerichtet.
+
+## Nutzung
+
+1. Ein lokales Konto anlegen. Es gibt keine Verbindung zum Instagram-Konto.
+2. Einen offiziellen ZIP-Export öffnen, vorzugsweise JSON, Follower und Following, gesamter Zeitraum, ein Konto pro Archiv.
+3. Vorschau, Kontozugehörigkeit und Vollständigkeit prüfen. Das Exportdatum nur angeben, wenn es verlässlich bekannt ist.
+4. Weitere Datenstände importieren. Übersicht, Beziehungen, Änderungen, Verlauf und Sammlungen verwenden.
+5. Regelmässig unter Einstellungen ein Backup speichern. Verschlüsselung mit eigener Passphrase ist optional.
+
+Unterstützt werden JSON und HTML einschliesslich gesplitteter Follower-Dateien. Suche, Sortierung, virtuelle Listen, CSV, Favoriten, Whitelist, Notizen, Tags, eigene Listen, gespeicherte Filter und eine manuelle Prüfliste sind verfügbar. Monats-/Jahresrückblicke verwenden bekannte Exportdaten in UTC. Die Charts zeigen ausdrücklich Importzeitpunkte. Die Oberfläche ist deutsch, mobil nutzbar und bietet ein dunkles Design.
+
+## Aussagekraft und Grenzen
+
+- Ein Username ist keine garantierte Personenidentität. Umbenennungen können wie Zugang und Verlust aussehen.
+- Gerichtete Veränderungen benötigen zwei vollständige Datenstände desselben Kontos und Formats mit bekannten, streng aufsteigenden Exportdaten. Importreihenfolge allein beweist keine zeitliche Reihenfolge.
+- Änderungen liegen in einem Beobachtungsintervall. Exakte Entfolgezeiten und Vorgänge zwischen Exporten sind unbekannt. Fehlende Daten ergeben keine vermeintlichen Unfollower.
+- Der Hash beruht auf normalisierten Listen. Identischer Inhalt wird pro Konto dedupliziert und erzeugt auch bei einem späteren unveränderten Export keinen weiteren Punkt. Ein bestätigter Reimport kann einen eingeschränkten Stand aufwerten.
+- Kontozugehörigkeit und gesamter Exportzeitraum werden vom Nutzer bestätigt. Falsche Bestätigungen lassen sich aus den Listen allein nicht erkennen.
+- Es gibt keine Ghost-Follower-Erkennung, Besucherlisten, Echtzeitüberwachung, automatische Entfolgeaktion oder Cloud-Synchronisation. Optionale professionelle Engagement-Schnittstellen benötigen eine gesonderte zulässige Datenquelle.
+- ZIP-Limits sind 256 MiB Archiv, 32 MiB pro ausgewähltem Eintrag, 128 MiB ausgewählte Daten, 10.000 Einträge, 500 Beziehungsdateien und Kompressionsverhältnis 500. Unbekannte Exportlayouts werden abgewiesen oder eingeschränkt angezeigt.
+- Browserdaten können verloren gehen. Browserprofil und Gerät schützen, Backups separat sichern. Die Passphrase kann nicht zurückgesetzt werden. Ein unverschlüsseltes Backup und CSV enthalten lesbare persönliche Daten.
+- IndexedDB speichert die versionierte Arbeitsfläche transaktional. Sehr grosse Historien benötigen mehr Speicher und Zeit, da die Arbeitsfläche bei Änderungen validiert wird. Geprüfte Grössen sind im [Testprotokoll](docs/_sociallens/VERIFICATION.md) dokumentiert.
+
+## Backup und alte Daten
+
+Backups sind versionierte JSON-Archive mit SHA-256-Prüfsumme, optional AES-256-GCM und PBKDF2-SHA-256. Restore prüft das vollständige Schema, Kontoreferenzen und Snapshot-Hashes vor dem atomaren Austausch. Version 1 ist das erste SocialLens-Format. Neuere unbekannte Formate werden sicher abgewiesen, bis ein expliziter Migrationsadapter existiert.
+
+Bestehende SafeUnfollow-Daten bleiben unverändert. In Einstellungen kann jede alte Analyse ausdrücklich einem lokalen Konto zugeordnet werden. Sie wird konservativ als eingeschränkter Legacy-Stand übernommen. Die bisherige Analyse samt zusätzlichen Datenkategorien bleibt unter `/legacy` erreichbar, das originale Entwicklungs-/Buildprofil über `npm run dev:upstream` und `npm run build:upstream`.
+
+## Prüfung und Projektunterlagen
+
+```sh
+npm run format:check
+npm run lint:strict
+npm run type-check
+npm run build:upstream
+npm run test:coverage
+npm run build
+npx playwright install chromium firefox webkit
+npm run test:e2e
+```
+
+[Architektur](docs/ARCHITECTURE.md) · [Ausgangsbasis](docs/BASELINE.md) · [Prüfergebnisse und Sicherheitsreview](docs/_sociallens/VERIFICATION.md) · [Änderungen](docs/_sociallens/CHANGELOG.md)
+
+![SocialLens auf dem Desktop mit synthetischen Daten](docs/_sociallens/screenshots/desktop.png)
+
+## Lizenz und Herkunft
+
+SocialLens ist ein Fork von SafeUnfollow, MIT © Igor Romanov. [LICENSE](LICENSE), ursprüngliche Autorenhinweise und Quellcode bleiben erhalten. Der Build erzeugt `THIRD_PARTY_NOTICES.txt` aus den tatsächlich gebündelten Abhängigkeiten, einschliesslich Schriftlizenzen. Ergänzende Lizenztexte sind mit Herkunft unter [Lizenzen](docs/_sociallens/licenses/README.md) dokumentiert.
+
+Die folgenden ursprünglichen Projektangaben beziehen sich auf SafeUnfollow. Dessen npm-Paket-/Zitationsmetadaten, Sprachumfang und Dienstangebote beschreiben das Upstream-Projekt. SocialLens hat die oben beschriebene deutsche private Oberfläche und ein eigenes Buildprofil.
+
+<details>
+<summary>Ursprüngliche SafeUnfollow-Dokumentation und Zitation</summary>
+
 <div align="center">
   <img src="./public/logo.svg" width="100" height="100" alt="Logo">
   <h1>SafeUnfollow — Instagram Unfollow Tracker</h1>
@@ -279,3 +355,5 @@ MIT License — see [LICENSE](LICENSE) for details.
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
   </a>
 </p>
+
+</details>

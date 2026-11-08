@@ -196,3 +196,9 @@ worktrees
 # Hosting scripts the build and Workers Builds run (see wrangler.jsonc)
 !scripts/static-config.ts
 !scripts/skip-build.mjs
+
+dist-sociallens/
+playwright-report/
+test-results/
+
+!scripts/sociallens-licenses.ts

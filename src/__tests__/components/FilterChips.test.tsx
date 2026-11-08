@@ -1,4 +1,4 @@
-import { vi, beforeEach } from 'vitest';
+import { vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FilterChips } from '@/components/FilterChips';
 import { BADGE_ORDER } from '@/core/badges';
@@ -40,6 +40,10 @@ describe('FilterChips Component', () => {
     vi.clearAllMocks();
     // Module state, shared with every other suite in the run.
     resetFilterSession();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe('rendering', () => {
@@ -99,7 +103,12 @@ describe('FilterChips Component', () => {
     // is 'en', which happens to format identically to the host default here, so
     // the rendered digits alone would not tell the two sources apart.
     it('should build the number formatter from i18n.language, not the host locale', () => {
-      const formatSpy = vi.spyOn(Intl, 'NumberFormat');
+      const NumberFormat = Intl.NumberFormat;
+      const formatSpy = vi
+        .spyOn(Intl, 'NumberFormat')
+        .mockImplementation(function (locales, options) {
+          return new NumberFormat(locales, options);
+        });
 
       render(<FilterChips {...defaultProps} />);
 

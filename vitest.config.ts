@@ -45,12 +45,6 @@ export default defineConfig({
       "src/__tests__/**/*.{test,spec}.{ts,tsx}",
     ],
 
-    // Force TypeScript compilation without JS output
-    testTransformMode: {
-      web: ["**/*.{ts,tsx}"],
-      ssr: ["**/*.{ts,tsx}"],
-    },
-
     // Exclude unnecessary folders and files
     exclude: [
       // All compiled JS files (exclude all JS files in src)
@@ -132,6 +126,9 @@ export default defineConfig({
     // Coverage configuration
     coverage: {
       provider: "v8",
+      // Vitest 4 removed coverage.all. Explicitly select source modules.
+      // Browser UI/worker execution is verified separately by Playwright (see verification report).
+      include: ["src/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
       reporter: ["text", "text-summary", "json"],
       reportOnFailure: true, // Generate coverage report even when tests fail
@@ -152,66 +149,6 @@ export default defineConfig({
 
         // Index files (re-exports only)
         "src/**/index.ts",
-
-        // Root directory files (exclude all files in project root)
-        "*.ts",
-        "*.js",
-        "*.json",
-        "*.yml",
-        "*.yaml",
-        "*.md",
-        "*.txt",
-        "*.html",
-        "*.css",
-        "*.scss",
-        "*.sass",
-        "*.less",
-
-        // Configuration files
-        "vite.config.ts",
-        "tsconfig.json",
-        "tsconfig.test.json",
-        "test-tsconfig.ts",
-        "vitest.setup.ts",
-        "vitest.setup.js",
-        "tailwind.config.js",
-        "postcss.config.js",
-        "eslint.config.js",
-        "components.json",
-        "codecov.yml",
-
-        // Documentation
-        "**/*.md",
-        "docs/**",
-
-        // Design versions
-        "designs/**",
-
-        // Build artifacts
-        "dist/**",
-        "node_modules/**",
-        "**/node_modules/**",
-        "coverage/**",
-
-        // Sibling checkouts of this same repository. `all: true` walks the project
-        // root, so a developer using the project's own worktree workflow measures
-        // every branch they have checked out: a run on 2026-08-14 counted 3236 files
-        // under .worktrees against 164 under src, and reported 37.24% statements.
-        // CI has no worktrees and no vendor bundle, so these three are no-ops there
-        // — they restore the local number to the one CI computes.
-        ".worktrees/**",
-        "ds-bundle/**",
-        ".ds-sync/**",
-        ".design-sync/**",
-
-        // `.claude` is a symlink into `.ai/`, a separate private repository that CI
-        // does not check out at all. Counting its tooling locally guarantees the
-        // local number can never agree with the one the gate computes.
-        ".ai/**",
-
-        // Raw data and assets
-        "raw/**",
-        "public/**",
 
         // Test files themselves
         "src/**/*.test.ts",
@@ -257,8 +194,6 @@ export default defineConfig({
         // 'src/hooks/useAccountFiltering.ts',
         // 'src/hooks/useFilterWorker.ts',
 
-        // Scripts and utility files
-        "scripts/**",
       ],
 
       // Coverage thresholds (balanced quality standards)
@@ -270,7 +205,6 @@ export default defineConfig({
       },
 
       // Coverage collection settings
-      all: true,
       skipFull: false,
       // Coverage enforcement
       clean: true, // Clean coverage directory before running
@@ -282,14 +216,8 @@ export default defineConfig({
     hookTimeout: 5000, // 5s max for setup/teardown
     teardownTimeout: 5000,
 
-    // Worker configuration optimized for performance
-    poolOptions: {
-      threads: {
-        singleThread: false,
-        minThreads: 4, // Start with 4 threads for good parallelization
-        maxThreads: 8, // Use up to 8 threads (50% of CPU cores) to avoid memory issues
-      },
-    },
+    // Vitest 4 places worker limits directly on test configuration.
+    maxWorkers: 8,
 
     // Force kill workers that exceed time limits
     forceRerunTriggers: [

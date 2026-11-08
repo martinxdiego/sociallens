@@ -58,9 +58,9 @@ describe('filter-worker', () => {
     };
 
     // Mock the IndexedDBFilterEngine constructor
-    vi.mocked(IndexedDBFilterEngine).mockImplementation(
-      () => mockEngine as unknown as IndexedDBFilterEngine
-    );
+    vi.mocked(IndexedDBFilterEngine).mockImplementation(function () {
+      return mockEngine as unknown as IndexedDBFilterEngine;
+    });
   });
 
   describe('initialize', () => {

@@ -104,7 +104,7 @@ describe('the docs paths the sitemap advertises', () => {
   it('ignores README.md, which _config.yml already excludes from the build', () => {
     // Not a page: `exclude:` in docs/_config.yml names it, so Jekyll emits no URL for it and
     // demanding a permalink would fail the build over a file that is documentation for us.
-    const root = fixture({ 'index.md': page('/'), 'README.md': '# notes for maintainers\n' });
+    const root = fixture({ 'index.md': page('/'), 'README.md': '# notes for maintainers\n', 'ARCHITECTURE.md': '# architecture\n' }, 'baseurl: "/docs"\nexclude:\n  - README.md\n  - ARCHITECTURE.md\n');
     expect(docsPaths(root)).toEqual(['/docs']);
   });
 

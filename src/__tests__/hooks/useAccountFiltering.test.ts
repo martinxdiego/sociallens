@@ -56,7 +56,9 @@ describe('useAccountFiltering', () => {
       candidateCounts: vi.fn().mockResolvedValue(mockFilterCounts),
     };
 
-    vi.mocked(IndexedDBFilterEngine).mockImplementation(() => mockEngine as any);
+    vi.mocked(IndexedDBFilterEngine).mockImplementation(function () {
+      return mockEngine as any;
+    });
     vi.mocked(indexedDBService.getBadgeStats).mockResolvedValue(mockFilterCounts);
     vi.mocked(useDebounce).mockImplementation((value: any) => [value, vi.fn()] as any);
 
@@ -481,7 +483,9 @@ describe('useAccountFiltering', () => {
         filterToIndices: vi.fn().mockResolvedValue([0, 1]),
       };
 
-      vi.mocked(IndexedDBFilterEngine).mockImplementation(() => failingEngine as any);
+      vi.mocked(IndexedDBFilterEngine).mockImplementation(function () {
+        return failingEngine as any;
+      });
 
       const { result, unmount } = renderHook(() =>
         useAccountFiltering({
@@ -965,7 +969,9 @@ describe('useAccountFiltering', () => {
         filterToIndices: vi.fn().mockResolvedValue([]),
       };
 
-      vi.mocked(IndexedDBFilterEngine).mockImplementation(() => failingEngine as any);
+      vi.mocked(IndexedDBFilterEngine).mockImplementation(function () {
+        return failingEngine as any;
+      });
 
       const { result, unmount } = renderHook(() =>
         useAccountFiltering({
