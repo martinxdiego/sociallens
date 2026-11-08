@@ -20,7 +20,7 @@
  * result. Refusing is cheap and loud; a sitemap one entry short is neither.
  */
 import { readdirSync, readFileSync, statSync } from "fs";
-import { join, resolve } from "path";
+import { join, resolve, relative } from "path";
 
 /** `permalink: /faq/` in a page's front matter, quoted or not. */
 const PERMALINK = /^permalink:\s*(.+?)\s*$/m;
@@ -39,16 +39,24 @@ function unquote(value: string): string {
  *
  * Skips `_`- and `.`-prefixed directories — `_layouts`, `_includes`, and a local `_site`, which
  * is a stale build output living inside the source tree and would advertise whatever the docs
- * used to say. Skips `README.md`, which `_config.yml`'s own `exclude:` already declares is not
- * a page; demanding a permalink of it would fail the build over a file for maintainers.
+ * used to say. Reads the root-relative `exclude:` list from `_config.yml`, so maintainer notes
+ * excluded by Jekyll do not enter the sitemap or published-page presentation checks.
  */
-function markdownPages(dir: string, found: string[] = []): string[] {
+export function publishedDocsFiles(docsDir: string): string[] {
+  const config = readFileSync(join(docsDir, '_config.yml'), 'utf-8');
+  const block = /^exclude:\s*\n((?:[ \t]+[^\n]*\n?)*)/m.exec(config)?.[1] ?? '';
+  const excluded = new Set([...block.matchAll(/^\s*-\s+([^#\n]+?)\s*$/gm)].map(match => unquote(match[1]!.trim())));
+  return markdownPages(docsDir, docsDir, excluded);
+}
+
+function markdownPages(dir: string, root: string, excluded: Set<string>, found: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
     if (entry.startsWith("_") || entry.startsWith(".")) continue;
     const full = join(dir, entry);
+    if (excluded.has(relative(root, full))) continue;
     if (statSync(full).isDirectory()) {
-      markdownPages(full, found);
-    } else if (entry.endsWith(".md") && entry !== "README.md") {
+      markdownPages(full, root, excluded, found);
+    } else if (entry.endsWith(".md")) {
       found.push(full);
     }
   }
@@ -98,7 +106,7 @@ export function docsPaths(docsDir: string): string[] {
     );
   }
 
-  const paths = markdownPages(docsDir).map(file => {
+  const paths = publishedDocsFiles(docsDir).map(file => {
     const permalink = permalinkOf(file, docsDir);
     // `permalink: /` is the index page, served at the baseurl itself.
     return permalink === "/" ? baseurl : `${baseurl}${permalink}`.replace(/\/$/, "");

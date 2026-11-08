@@ -1,19 +1,13 @@
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { publishedDocsFiles } from '../../../scripts/docs-paths';
+
 const DOCS_ROOT = join(process.cwd(), 'docs');
 
-function markdownFiles(dir: string): string[] {
-  return readdirSync(dir).flatMap(entry => {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) return entry === 'assets' ? [] : markdownFiles(full);
-    return full.endsWith('.md') ? [full] : [];
-  });
-}
-
-const DOCS = markdownFiles(DOCS_ROOT).map(path => ({
+const DOCS = publishedDocsFiles(DOCS_ROOT).map(path => ({
   name: relative(DOCS_ROOT, path),
   text: readFileSync(path, 'utf-8'),
 }));

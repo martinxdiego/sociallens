@@ -44,7 +44,7 @@ jobs:
           node-version: 22
           cache: 'npm'
       - run: npm ci --prefer-offline --no-audit
-      - run: npm run build --if-present
+      - run: npm run build:upstream --if-present
         env:
           VITE_DODO_CHECKOUT_URL: ${{ env.BUDGET_CHECKOUT_URL }}
           VITE_ADSENSE_CLIENT: ${{ env.BUDGET_ADSENSE_CLIENT }}

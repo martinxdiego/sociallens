@@ -64,6 +64,8 @@ plugins:
 
 # Exclude files from processing
 exclude:
+  - ARCHITECTURE.md
+  - BASELINE.md
   - README.md
   - Gemfile
   - Gemfile.lock
